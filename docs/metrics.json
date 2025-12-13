@@ -1,0 +1,42 @@
+{
+    "accuracy": 0.9996874717285281,
+    "f1_score": 0.9996874680671477,
+    "log_loss": 0.0007538290579303485,
+    "training_time_sec": 465.23776173591614,
+    "features": [
+        "tcp",
+        "AckDat",
+        "sHops",
+        "Seq",
+        "RST",
+        "TcpRtt",
+        "REQ",
+        "dMeanPktSz",
+        "Offset",
+        "CON",
+        "FIN",
+        "sTtl",
+        "INT",
+        "Mean",
+        "Status",
+        "icmp",
+        "SrcTCPBase",
+        "sMeanPktSz",
+        "DstLoss",
+        "Loss",
+        "dTtl",
+        "SrcBytes",
+        "TotBytes"
+    ],
+    "label": {
+        "Benign": 0,
+        "UDPFlood": 1,
+        "HTTPFlood": 2,
+        "SlowrateDoS": 3,
+        "TCPConnectScan": 4,
+        "SYNScan": 5,
+        "UDPScan": 6,
+        "SYNFlood": 7,
+        "ICMPFlood": 8
+    }
+}
