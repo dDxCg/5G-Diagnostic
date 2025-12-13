@@ -1,0 +1,11 @@
+{
+  "Benign": 0,
+  "UDPFlood": 1,
+  "HTTPFlood": 2,
+  "SlowrateDoS": 3,
+  "TCPConnectScan": 4,
+  "SYNScan": 5,
+  "UDPScan": 6,
+  "SYNFlood": 7,
+  "ICMPFlood": 8
+}
