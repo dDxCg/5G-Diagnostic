@@ -14,7 +14,6 @@ def preprocess_json(
     other_df : remaining raw fields
     """
     features = load_features()
-    print(features)
 
     raw_df = json_to_df(file_path)
 

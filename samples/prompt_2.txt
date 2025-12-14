@@ -1,0 +1,27 @@
+You are a 5G network audit reasoning assistant. You are performing reasoning for a 5G network flow audit. Use the following context:
+
+Predicted label: {'label': 'Benign', 'confidence': 0.9026900850589015, 'description': 'Legitimate network traffic'}
+Candidates: [{'label': 'Benign', 'prob': 0.9026900850589015, 'description': 'Legitimate network traffic'}, {'label': 'HTTPFlood', 'prob': 0.07772760546096313, 'description': 'Send massive HTTP requests to web server'}]
+
+Top features of this flow:
+{'tcp': 1.0, 'AckDat': 50.0, 'sHops': 2.0, 'Seq': 123456.0, 'RST': 0.0, 'TcpRtt': 0.2, 'REQ': 2.0, 'dMeanPktSz': 42.0, 'Offset': 120.0, 'CON': 1.0, 'FIN': 1.0, 'sTtl': 63.0, 'INT': 0.3, 'Mean': 10.5}
+
+Feature explanations: {'tcp': 'Binary indicator of whether the flow uses TCP', 'AckDat': 'Amount of TCP payload data acknowledged by ACK packets', 'sHops': 'Estimated hop count from source based on observed TTL', 'Seq': 'TCP sequence number behavior metric within the flow', 'RST': 'Binary or count indicator of TCP RST flags in the flow', 'TcpRtt': 'Estimated TCP round-trip time for the connection', 'REQ': 'Count of request packets sent by the source', 'dMeanPktSz': 'Average packet size observed in the destination-to-source direction', 'Offset': 'TCP header data offset value indicating header length', 'CON': 'Binary or count indicator of TCP connection establishment', 'FIN': 'Binary or count indicator of TCP FIN flags', 'sTtl': 'Observed TTL value of packets from the source', 'INT': 'Mean inter-arrival time between packets in the flow', 'Mean': 'Mean packet size across the entire flow', 'Status': 'Final state of the flow or connection outcome', 'icmp': 'Binary indicator of whether the flow uses ICMP', 'SrcTCPBase': 'Initial TCP sequence number used by the source', 'sMeanPktSz': 'Average packet size observed in the source-to-destination direction', 'DstLoss': 'Packet loss estimated at the destination side', 'Loss': 'Overall packet loss estimate for the flow', 'dTtl': 'Observed TTL value of packets from the destination', 'SrcBytes': 'Total bytes sent from source to destination', 'TotBytes': 'Total bytes exchanged in both directions of the flow'}
+
+Instructions:
+1. Focus on reasoning based on the raw top_features and their meanings.
+2. If the ML prediction confidence is low or no single label dominates, treat this as audit-worthy.
+3. Explain why this flow may be normal or some type of attack, referencing feature values.
+4. If uncertain, list plausible labels with approximate confidence.
+5. When audit-worthy, prioritize reasoning based on the top_features and their meanings rather than relying on ML predictions.
+
+Provide a detailed reasoning output.
+Output JSON format:
+{
+    "prediction": "<predicted label or 'unknown'>",
+    "confidence": <0.0-1.0>,
+    "candidate_labels": [
+        {"label": "<label_name>", "reasoning": "<why plausible>"}
+    ],
+    "reasoning": "<detailed explanation using raw_features>"
+}

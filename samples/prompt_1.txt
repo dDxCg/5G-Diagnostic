@@ -1,0 +1,29 @@
+You are a 5G network audit reasoning assistant. You are performing reasoning for a 5G network flow audit. Use the following context:
+
+Case context:
+- Issue: ML skipped
+- Trust level: low
+- Reason: Skipped ML due to 5 missing critical features
+
+Raw network features (numeric/categorical):
+{'Unnamed: 0': 129340, 'Seq': None, 'Dur': 2.581974, 'RunTime': 2.581974, 'Mean': 2.581974, 'Sum': 2.581974, 'Min': 2.581974, 'Max': 2.581974, 'sTos': 0.0, 'dTos': None, 'sTtl': 63.0, 'dTtl': None, 'sHops': None, 'dHops': None, 'TotPkts': 2, 'SrcPkts': 2, 'DstPkts': 0, 'TotBytes': 84, 'SrcBytes': 84, 'DstBytes': 0, 'Offset': None, 'sMeanPktSz': 42.0, 'dMeanPktSz': 0.0, 'Load': 130.132996, 'SrcLoad': 130.132996, 'DstLoad': 0.0, 'Loss': 0, 'SrcLoss': 0, 'DstLoss': 0, 'pLoss': 0.0, 'SrcGap': None, 'DstGap': None, 'Rate': 0.387301, 'SrcRate': 0.387301, 'DstRate': 0.0, 'SrcWin': None, 'DstWin': None, 'sVid': None, 'dVid': None, 'SrcTCPBase': None, 'DstTCPBase': None, 'TcpRtt': 0.0, 'SynAck': 0.0, 'AckDat': None, 'ACC': 0.0, 'CON': 0.0, 'ECO': 0.0, 'FIN': 0.0, 'INT': 0.0, 'NRS': 0.0, 'REQ': 1.0, 'RSP': 0.0, 'RST': 0.0, 'TST': 0.0, 'URP': 0.0, 'arp': 0.0, 'icmp': 0.0, 'ipv6-icmp': 0.0, 'llc': 0.0, 'lldp': 0.0, 'sctp': 0.0, 'tcp': None, 'udp': 1.0, 'Shutdown': 0.0, 'Start': 0.0, 'Status': 1.0, '39': 0.0, '4': 0.0, '52': 0.0, '54': 0.0, 'af11': 0.0, 'af12': 0.0, 'af41': 0.0, 'cs0': 1.0, 'cs4': 0.0, 'cs6': 0.0, 'cs7': 0.0, 'ef': 0.0, 'af11.1': 0.0, 'af12.1': 0.0, 'cs0.1': 0.0, 'cs1': 0.0, 'cs4.1': 0.0, 'ef.1': 0.0}
+
+Feature explanations:
+{'tcp': 'Binary indicator of whether the flow uses TCP', 'AckDat': 'Amount of TCP payload data acknowledged by ACK packets', 'sHops': 'Estimated hop count from source based on observed TTL', 'Seq': 'TCP sequence number behavior metric within the flow', 'RST': 'Binary or count indicator of TCP RST flags in the flow', 'TcpRtt': 'Estimated TCP round-trip time for the connection', 'REQ': 'Count of request packets sent by the source', 'dMeanPktSz': 'Average packet size observed in the destination-to-source direction', 'Offset': 'TCP header data offset value indicating header length', 'CON': 'Binary or count indicator of TCP connection establishment', 'FIN': 'Binary or count indicator of TCP FIN flags', 'sTtl': 'Observed TTL value of packets from the source', 'INT': 'Mean inter-arrival time between packets in the flow', 'Mean': 'Mean packet size across the entire flow', 'Status': 'Final state of the flow or connection outcome', 'icmp': 'Binary indicator of whether the flow uses ICMP', 'SrcTCPBase': 'Initial TCP sequence number used by the source', 'sMeanPktSz': 'Average packet size observed in the source-to-destination direction', 'DstLoss': 'Packet loss estimated at the destination side', 'Loss': 'Overall packet loss estimate for the flow', 'dTtl': 'Observed TTL value of packets from the destination', 'SrcBytes': 'Total bytes sent from source to destination', 'TotBytes': 'Total bytes exchanged in both directions of the flow'}
+
+Instructions:
+1. Focus primarily on reasoning from the raw_features.
+2. Consider missing ML features only as contextual information, but do not let them dominate your judgment.
+3. Predict whether the flow is normal or indicates a type of attack.
+4. If uncertain, list plausible candidate labels with approximate confidence.
+5. Provide a detailed explanation referencing the raw feature values, highlighting which features suggest your prediction.
+
+Output JSON format:
+{
+    "prediction": "<predicted label or 'unknown'>",
+    "confidence": <0.0-1.0>,
+    "candidate_labels": [
+        {"label": "<label_name>", "reasoning": "<why plausible>"}
+    ],
+    "reasoning": "<detailed explanation using raw_features>"
+}
