@@ -6,33 +6,39 @@ from ml.gateway import gateway_single
 from utils.loader import load_json_file
 from llm.prompt import build_fallback_prompt, build_post_ml_prompt
 from llm.model import response
+from utils.export import export_llm_res_to_json
+import time
 
 MODEL_PATH = "models/lgbm_model.bin"
 INPUT_JSON = "samples/sample_testing_1.json"
 
 def main():
-    print("1. Preprocess")
+    start_time = time.time()
+    print("<--- Preprocess --->")
     X_df, top_features_data = preprocess_json(INPUT_JSON)
-    print(X_df)
     
     check, missing_fields = gateway_single(X_df)
     if check:
-        print("2. Load model")
+        print("<--- Load model --->")
         model = load_model(MODEL_PATH)
 
-        print("3. Predict")
+        print("<--- Predict --->")
         result = predict(X_df, model)
+        print(f"Predict time: {time.time() - start_time}")
 
         context = post_ML_context(result, top_features_data)
         prompt = build_post_ml_prompt(context)
     else:
+        print("<--- ML Skipped --->")
         context = fall_back_context(load_json_file(INPUT_JSON), missing_fields)
         prompt = build_fallback_prompt(context)
 
-    print("4: LLM reasoning")
+    print("<--- LLM reasoning --->")
     messages = [{"role": "user", "content": prompt}]
     ans = response(messages)
-    print(ans)
+    export_llm_res_to_json(ans)
+    pipeline_time = time.time() - start_time
+    print(f"Pipeline time: {pipeline_time}")
 
 if __name__ == "__main__":
     main()
