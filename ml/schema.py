@@ -27,3 +27,7 @@ def load_features_explain():
     
     with open(FEATURES_EXPLAIN, "r") as f:
         return json.load(f)
+    
+
+TOP_CUT = 14
+top_features = load_features()[:TOP_CUT]

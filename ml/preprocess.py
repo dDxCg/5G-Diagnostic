@@ -2,6 +2,7 @@ import pandas as pd
 from utils.loader import json_to_df
 from .schema import load_features
 from pathlib import Path
+from .schema import top_features
 
 def preprocess_json(
     file_path: str | Path,
@@ -25,5 +26,10 @@ def preprocess_json(
     other_cols = [c for c in raw_df.columns if c not in features]
     other_df = raw_df[other_cols].copy()
 
-    return X_df, other_df
+    top_features_data = {
+        f: float(X_df.iloc[0][f]) if pd.notna(X_df.iloc[0][f]) else None
+        for f in top_features
+    }
+
+    return X_df, top_features_data
 
