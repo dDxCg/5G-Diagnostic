@@ -22,6 +22,7 @@ Instructions:
 
 Output JSON format:
 {{
+    "warning": "Skipped ML layer due to missing critical features."
     "prediction": "<predicted label or 'unknown'>",
     "confidence": <0.0-1.0>,
     "candidate_labels": [

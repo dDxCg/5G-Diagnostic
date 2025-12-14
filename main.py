@@ -9,7 +9,7 @@ from llm.model import response
 from utils.export import export_llm_res_to_json
 
 MODEL_PATH = "models/lgbm_model.bin"
-INPUT_JSON = "samples/sample_testing_1.json"
+INPUT_JSON = "samples/sample_missing.json"
 
 def main():
     print("<--- Preprocess --->")
