@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <title>Log Gateway Demo</title>
+    <style>
+        body {
+            font-family: system-ui, sans-serif;
+            margin: 24px;
+            background: #0f172a;
+            color: #e5e7eb;
+        }
+
+        h1 {
+            font-size: 20px;
+            margin-bottom: 12px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 160px;
+            background: #020617;
+            color: #e5e7eb;
+            border: 1px solid #334155;
+            padding: 12px;
+            font-family: monospace;
+            font-size: 13px;
+        }
+
+        button {
+            margin-top: 8px;
+            padding: 8px 14px;
+            background: #2563eb;
+            border: none;
+            color: white;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        pre {
+            background: #020617;
+            border: 1px solid #334155;
+            padding: 12px;
+            height: 300px;
+            overflow: auto;
+            font-size: 12px;
+        }
+
+        .status {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-top: 6px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Gateway Log + WebSocket Demo</h1>
+
+    <div class="row">
+        <!-- LEFT: SEND LOG -->
+        <div>
+            <h3>Send Log (REST)</h3>
+            <textarea id="logInput" aria-label="send-log">
+{
+  "data": {
+    "user_id": 123,
+    "action": "click",
+    "latency_ms": 42,
+    "page": "/home"
+  }
+}
+    </textarea>
+            <button onclick="sendLog()">Send Log</button>
+            <div class="status" id="restStatus"></div>
+        </div>
+
+        <!-- RIGHT: SOCKET EVENTS -->
+        <div>
+            <h3>Socket Events</h3>
+            <pre id="events"></pre>
+            <div class="status" id="wsStatus">WS: connecting...</div>
+        </div>
+    </div>
+
+    <script>
+        const eventsEl = document.getElementById("events");
+        const wsStatusEl = document.getElementById("wsStatus");
+        const restStatusEl = document.getElementById("restStatus");
+
+        function logEvent(msg) {
+            eventsEl.textContent += msg + "\n";
+            eventsEl.scrollTop = eventsEl.scrollHeight;
+        }
+
+        // ---- WebSocket ----
+        const ws = new WebSocket("ws://localhost:8000/ws");
+
+        ws.onopen = () => {
+            wsStatusEl.textContent = "WS: connected";
+            logEvent("[WS] connected");
+        };
+
+        ws.onmessage = (event) => {
+            try {
+                const data = JSON.parse(event.data);
+                logEvent("[EVENT] " + JSON.stringify(data, null, 2));
+            } catch {
+                logEvent("[RAW] " + event.data);
+            }
+        };
+
+        ws.onclose = () => {
+            wsStatusEl.textContent = "WS: disconnected";
+            logEvent("[WS] disconnected");
+        };
+
+        ws.onerror = () => {
+            wsStatusEl.textContent = "WS: error";
+            logEvent("[WS] error");
+        };
+
+        // ---- REST ----
+        async function sendLog() {
+            let payload;
+            try {
+                payload = JSON.parse(document.getElementById("logInput").value);
+            } catch (e) {
+                alert("Invalid JSON");
+                return;
+            }
+
+            restStatusEl.textContent = "sending...";
+
+            try {
+                const res = await fetch("http://127.0.0.1:8000/gateway/log", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await res.json();
+                restStatusEl.textContent = "REST OK: " + JSON.stringify(data);
+            } catch (e) {
+                restStatusEl.textContent = "REST ERROR";
+            }
+        }
+    </script>
+
+</body>
+
+</html>
