@@ -10,7 +10,7 @@ from utils.export import export_llm_res_to_json
 import time
 
 MODEL_PATH = "models/lgbm_model.bin"
-INPUT_JSON = "samples/sample_testing_1.json"
+INPUT_JSON = "samples/sample_1.json"
 
 def main():
     start_time = time.time()

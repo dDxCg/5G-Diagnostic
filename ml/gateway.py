@@ -1,4 +1,4 @@
-from .schema import load_features, top_features
+from .schema import top_features
 from math import ceil
 import pandas as pd
 

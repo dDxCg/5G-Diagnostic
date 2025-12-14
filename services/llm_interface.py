@@ -14,10 +14,17 @@ client = OpenAI(
   api_key=api_key,
 )
 
-def response(messages):
-    ans = client.chat.completions.create(
+def _sync_llm_call(messages):
+    return client.chat.completions.create(
         model="google/gemma-3n-e4b-it:free",
         messages=messages,
-        extra_body={"reasoning": {"enabled": True}}
+        extra_body={"reasoning": {"enabled": True}},
     )
-    return ans
+
+async def response(messages):
+    loop = asyncio.get_running_loop()
+    return await loop.run_in_executor(
+        None,
+        _sync_llm_call,
+        messages,
+    )

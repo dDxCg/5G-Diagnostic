@@ -1,0 +1,27 @@
+{
+  "features": [
+    "tcp",
+    "AckDat",
+    "sHops",
+    "Seq",
+    "RST",
+    "TcpRtt",
+    "REQ",
+    "dMeanPktSz",
+    "Offset",
+    "CON",
+    "FIN",
+    "sTtl",
+    "INT",
+    "Mean",
+    "Status",
+    "icmp",
+    "SrcTCPBase",
+    "sMeanPktSz",
+    "DstLoss",
+    "Loss",
+    "dTtl",
+    "SrcBytes",
+    "TotBytes"
+  ]
+}

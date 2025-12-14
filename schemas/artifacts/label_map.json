@@ -1,0 +1,38 @@
+{
+  "0": {
+    "name": "Benign",
+    "description": "Legitimate network traffic"
+  },
+  "1": {
+    "name": "UDPFlood",
+    "description": "Flood UDP packets to exhaust resources"
+  },
+  "2": {
+    "name": "HTTPFlood",
+    "description": "Send massive HTTP requests to web server"
+  },
+  "3": {
+    "name": "SlowrateDoS",
+    "description": "Slow requests to hold connections"
+  },
+  "4": {
+    "name": "TCPConnectScan",
+    "description": "Full TCP handshake scan for open ports"
+  },
+  "5": {
+    "name": "SYNScan",
+    "description": "SYN packets only scan for ports"
+  },
+  "6": {
+    "name": "UDPScan",
+    "description": "UDP packets scan for available services"
+  },
+  "7": {
+    "name": "SYNFlood",
+    "description": "SYN handshake flood to exhaust connection queue"
+  },
+  "8": {
+    "name": "ICMPFlood",
+    "description": "Flood ICMP echo requests (ping)"
+  }
+}
