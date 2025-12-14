@@ -1,24 +1,31 @@
 from ml.model import load_model
 from ml.preprocess import preprocess_json
 from ml.model import predict
-from utils.convert import json_to_df   # hoặc copy hàm vào đây
+from ml.context import convert_pred, fall_back_context
+from ml.gateway import gateway_single
+from utils.loader import load_json_file
 
 MODEL_PATH = "models/lgbm_model.bin"
-INPUT_JSON = "samples/sample_5.json"
+INPUT_JSON = "samples/sample_testing_1.json"
 
 def main():
     print("1. Preprocess")
-    X_df, other_df = preprocess_json(INPUT_JSON)
+    X_df, _ = preprocess_json(INPUT_JSON)
     print(X_df)
+    
+    check, missing_fields = gateway_single(X_df)
+    if check:
+        print("2. Load model")
+        model = load_model(MODEL_PATH)
 
-    print("2. Load model")
-    model = load_model(MODEL_PATH)
+        print("3. Predict")
+        result = predict(X_df, model)
 
-    print("3. Predict")
-    result = predict(X_df, model)
-
-    print("=== Prediction Result ===")
-    print(result)
+        print("=== Prediction Result ===")
+        print (result)
+        print (convert_pred(result['label']))
+    else:
+        print(fall_back_context(load_json_file(INPUT_JSON), missing_fields))
 
 if __name__ == "__main__":
     main()

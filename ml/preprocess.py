@@ -1,5 +1,5 @@
 import pandas as pd
-from utils.convert import json_to_df
+from utils.loader import json_to_df
 from .schema import load_features
 from pathlib import Path
 
