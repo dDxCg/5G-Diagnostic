@@ -8,6 +8,7 @@ from .prompt import build_post_ml_prompt, build_fallback_prompt
 from .llm_interface import response
 from websocket.socket_manager import event_bus
 from utils.format import clean_llm_json
+from schemas.artifacts import label_map
 
 async def log_consumer(queue: asyncio.Queue):
     while True:
@@ -20,12 +21,13 @@ async def log_consumer(queue: asyncio.Queue):
 
             if ml_valid:
                 result = await ml_predict(X_df)
-                
+                label = label_map[str(result['label'])]["name"]
                 await event_bus.emit(
                     "job_done",
                     {
                         "event": "ML predict completed",
                         "log_id": log_id,
+                        "prediction": label,
                         "result": result,
                     }
                 )
