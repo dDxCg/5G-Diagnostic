@@ -2,7 +2,7 @@ from app.schemas.artifacts import features, top_features
 from typing import Dict, Any
 import pandas as pd
 
-async def preprocess(log: Dict[str, Any]):
+def preprocess(log: Dict[str, Any]):
     raw_df = pd.DataFrame([log])
 
     # Ensure ML features are present, missing -> NaN
@@ -18,5 +18,5 @@ async def preprocess(log: Dict[str, Any]):
     row = X_df.iloc[0]
     missing_fields = [f for f in top_features if f not in row or pd.isna(row[f])]
 
-    return X_df, top_features_data, missing_fields
+    return X_df, top_features_data, missing_fields  
 

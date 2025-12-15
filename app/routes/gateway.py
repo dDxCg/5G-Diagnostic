@@ -10,7 +10,6 @@ from app.utils.get_state import get_log_queue
 
 router = APIRouter(prefix="/gateway")
 
-
 @router.post("/log")
 async def post_log(
     log: UserLog,

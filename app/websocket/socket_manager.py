@@ -10,8 +10,9 @@ class EventBus:
         self._handlers.setdefault(event, []).append(handler)
 
     async def emit(self, event: str, data: Any):
+        # Run emit in background, không block loop
         for handler in self._handlers.get(event, []):
-            await handler(data)
+            asyncio.create_task(handler(data))
 
 class WebSocketManager:
     def __init__(self):
@@ -26,10 +27,8 @@ class WebSocketManager:
 
     async def broadcast(self, payload: dict):
         for ws in list(self.connections):
-            try:
-                await ws.send_json(payload)
-            except Exception:
-                self.disconnect(ws)
+            # mỗi client chạy background, không block loop
+            asyncio.create_task(ws.send_json(payload))
 
 
 event_bus = EventBus()
@@ -40,8 +39,8 @@ async def _broadcast_event(payload: dict):
     await ws_manager.broadcast(payload)
 
 
-event_bus.on("job_done", _broadcast_event)
-event_bus.on("job_failed", _broadcast_event)
+event_bus.on("ml_finish", _broadcast_event)
+event_bus.on("llm_finish", _broadcast_event)
 
 
 router = APIRouter()

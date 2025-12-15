@@ -35,7 +35,13 @@ def fall_back_context(raw, missing_fields):
     return context
 
 
-def post_ML_context(result, features):
+def post_ML_context(result, top_features_data):
+    """Build context for LLM after ML prediction.
+    
+    Args:
+        result: ML prediction dict with 'label', 'confidence', 'probs'
+        top_features_data: dict of top feature values from preprocessing
+    """
     label = result['label']
     confident = result['confidence']
     probs = result['probs']
@@ -49,7 +55,7 @@ def post_ML_context(result, features):
     context = {
         "prediction": prediction,
         "candidates": format_probs(probs),
-        "top_features": features,
+        "top_features": top_features_data,
         "feature_explain": feature_meaning
     }
 

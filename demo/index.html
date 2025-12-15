@@ -63,12 +63,15 @@
             opacity: 0.8;
             margin-top: 6px;
         }
+
+        h3 {
+            margin-bottom: 6px;
+        }
     </style>
 </head>
 
 <body>
-
-    <h1>Gateway Log + WebSocket Demo</h1>
+    <h1>Gateway Log + WebSocket Demo (2 Channels)</h1>
 
     <div class="row">
         <!-- LEFT: SEND LOG -->
@@ -83,27 +86,35 @@
     "page": "/home"
   }
 }
-    </textarea>
+            </textarea>
             <button onclick="sendLog()">Send Log</button>
             <div class="status" id="restStatus"></div>
         </div>
 
         <!-- RIGHT: SOCKET EVENTS -->
         <div>
-            <h3>Socket Events</h3>
-            <pre id="events"></pre>
+            <h3>ML Events</h3>
+            <pre id="mlEvents"></pre>
+            <h3>LLM Events</h3>
+            <pre id="llmEvents"></pre>
             <div class="status" id="wsStatus">WS: connecting...</div>
         </div>
     </div>
 
     <script>
-        const eventsEl = document.getElementById("events");
+        const mlEl = document.getElementById("mlEvents");
+        const llmEl = document.getElementById("llmEvents");
         const wsStatusEl = document.getElementById("wsStatus");
         const restStatusEl = document.getElementById("restStatus");
 
-        function logEvent(msg) {
-            eventsEl.textContent += msg + "\n";
-            eventsEl.scrollTop = eventsEl.scrollHeight;
+        function logML(msg) {
+            mlEl.textContent += msg + "\n";
+            mlEl.scrollTop = mlEl.scrollHeight;
+        }
+
+        function logLLM(msg) {
+            llmEl.textContent += msg + "\n";
+            llmEl.scrollTop = llmEl.scrollHeight;
         }
 
         // ---- WebSocket ----
@@ -111,57 +122,49 @@
 
         ws.onopen = () => {
             wsStatusEl.textContent = "WS: connected";
-            logEvent("[WS] connected");
+            logML("[WS] connected");
+            logLLM("[WS] connected");
         };
 
         ws.onmessage = (event) => {
             try {
                 const data = JSON.parse(event.data);
-                logEvent("[EVENT] " + JSON.stringify(data, null, 2));
+                if (data.event === "ml_finish" || data.event === "ML predict completed") {
+                    logML(JSON.stringify(data, null, 2));
+                } else if (data.event === "llm_finish" || data.event === "LLM reasoning completed") {
+                    logLLM(JSON.stringify(data, null, 2));
+                } else {
+                    // nếu không biết event, log vào cả 2
+                    logML("[OTHER] " + JSON.stringify(data));
+                    logLLM("[OTHER] " + JSON.stringify(data));
+                }
             } catch {
-                logEvent("[RAW] " + event.data);
+                logML("[RAW] " + event.data);
+                logLLM("[RAW] " + event.data);
             }
         };
 
-        ws.onclose = () => {
-            wsStatusEl.textContent = "WS: disconnected";
-            logEvent("[WS] disconnected");
-        };
-
-        ws.onerror = () => {
-            wsStatusEl.textContent = "WS: error";
-            logEvent("[WS] error");
-        };
+        ws.onclose = () => { wsStatusEl.textContent = "WS: disconnected"; logML("[WS] disconnected"); logLLM("[WS] disconnected"); };
+        ws.onerror = () => { wsStatusEl.textContent = "WS: error"; logML("[WS] error"); logLLM("[WS] error"); };
 
         // ---- REST ----
         async function sendLog() {
             let payload;
-            try {
-                payload = JSON.parse(document.getElementById("logInput").value);
-            } catch (e) {
-                alert("Invalid JSON");
-                return;
-            }
+            try { payload = JSON.parse(document.getElementById("logInput").value); }
+            catch (e) { alert("Invalid JSON"); return; }
 
             restStatusEl.textContent = "sending...";
-
             try {
                 const res = await fetch("http://127.0.0.1:8000/gateway/log", {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
+                    headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(payload)
                 });
-
                 const data = await res.json();
                 restStatusEl.textContent = "REST OK: " + JSON.stringify(data);
-            } catch (e) {
-                restStatusEl.textContent = "REST ERROR";
-            }
+            } catch (e) { restStatusEl.textContent = "REST ERROR"; }
         }
     </script>
-
 </body>
 
 </html>
